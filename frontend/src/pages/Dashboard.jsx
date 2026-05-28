@@ -37,10 +37,10 @@ export default function Dashboard({ userStats = { name: 'Student', xp: 120, leve
   const [assets, setAssets] = useState({ flashcards: [], quizzes: [] });
 
   useEffect(() => {
-    apiRequest('/deadlines/summary').then(setSummary).catch(() => {});
+    apiRequest('/deadlines/summary').then(setSummary).catch(() => { });
     Promise.all([apiRequest('/assets?type=flashcard&limit=3'), apiRequest('/assets?type=quiz&limit=3')])
       .then(([flashcards, quizzes]) => setAssets({ flashcards, quizzes }))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (
@@ -115,7 +115,7 @@ export default function Dashboard({ userStats = { name: 'Student', xp: 120, leve
               <h2 className="mt-5 max-w-3xl text-4xl font-black tracking-[-0.05em] md:text-6xl">Everything important floats forward.</h2>
             </div>
             <p className="max-w-md text-sm leading-7 text-white/45">
-              No dashboard clutter. Each module behaves like a focused surface in a larger learning cockpit.
+              Your AI Studyspace
             </p>
           </div>
         </Reveal>
