@@ -1,6 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -49,6 +50,32 @@ router.post('/login', async (req, res, next) => {
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
         }
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get('/me', protect, async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id).select('-password');
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        res.json(user);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.patch('/me', protect, async (req, res, next) => {
+    try {
+        const allowed = ['name', 'email', 'mobile', 'college', 'department', 'semester', 'bio'];
+        const updates = {};
+        allowed.forEach((key) => {
+            if (typeof req.body[key] !== 'undefined') updates[key] = req.body[key];
+        });
+
+        const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true }).select('-password');
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        res.json(user);
     } catch (error) {
         next(error);
     }

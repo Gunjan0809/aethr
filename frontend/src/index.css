@@ -1,10 +1,10 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #eef3f7;
+  --foreground: #111827;
   color-scheme: light;
 }
 
@@ -15,7 +15,7 @@ html {
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: Manrope, 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'Satoshi', 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -25,7 +25,7 @@ body {
 
 @layer base {
   h1, h2, h3, h4 {
-    @apply tracking-tighter;
+    letter-spacing: 0;
   }
 }
 
@@ -33,14 +33,14 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #e7edf3;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #b8c4d1;
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #8fa0b3;
 }
 
 button,
@@ -63,7 +63,26 @@ a {
 }
 
 .chip {
-  @apply inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50;
+  @apply inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/70 px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-white;
+}
+
+.panel {
+  @apply rounded-[1.25rem] border border-white/80 bg-white/70 shadow-[0_18px_55px_rgba(31,41,55,0.10)] backdrop-blur-xl;
+}
+
+.btn-main {
+  @apply rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(15,23,42,0.22)] transition hover:-translate-y-0.5 hover:bg-slate-800;
+}
+
+.chip-dark {
+  @apply inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/70 px-3 py-1.5 text-xs text-slate-700 shadow-sm transition hover:bg-white;
+}
+
+.surface-3d {
+  background:
+    radial-gradient(circle at 20% 15%, rgba(124, 244, 184, 0.32), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(105, 214, 255, 0.28), transparent 26%),
+    linear-gradient(135deg, #f8fbff 0%, #eef4fa 48%, #e6edf6 100%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -76,3 +95,4 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+

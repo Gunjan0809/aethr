@@ -84,4 +84,13 @@ router.get('/:id/attempts', protect, async (req, res, next) => {
   } catch (error) { next(error); }
 });
 
+router.delete('/:id', protect, async (req, res, next) => {
+  try {
+    const exam = await Exam.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+    if (!exam) return res.status(404).json({ message: 'Exam not found' });
+    await ExamAttempt.deleteMany({ user: req.user._id, exam: req.params.id });
+    res.json({ ok: true });
+  } catch (error) { next(error); }
+});
+
 export default router;

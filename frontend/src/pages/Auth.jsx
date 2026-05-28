@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, LockKeyhole, Mail, Sparkles, User } from 'lucide-react';
+import { ArrowRight, LockKeyhole, Mail, User } from 'lucide-react';
 import { apiRequest } from '../api';
-import { AetherMark, AmbientScene, GlassPanel, KineticButton, SectionKicker } from '../components/Cinematic';
 
 export default function Auth({ onAuthSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -24,101 +23,64 @@ export default function Auth({ onAuthSuccess }) {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#050507] px-5 py-6 text-white selection:bg-accent-indigo/30">
-      <AmbientScene />
-      <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between">
-        <AetherMark />
-        <span className="hidden font-mono text-[10px] uppercase tracking-[0.28em] text-white/35 sm:block">Private beta workspace</span>
-      </header>
-
-      <main className="relative z-10 mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-12 py-12 lg:grid-cols-[1.1fr_0.9fr]">
-        <motion.section initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-          <SectionKicker icon={Brain}>AI learning operating system</SectionKicker>
-          <h1 className="mt-8 max-w-4xl text-[clamp(3.6rem,9vw,8.6rem)] font-black leading-[0.84] tracking-[-0.08em]">
-            Enter your focus layer.
+    <div className="surface-3d min-h-screen overflow-hidden text-slate-950">
+      <main className="mx-auto grid min-h-screen w-full max-w-6xl items-center gap-8 px-5 py-8 lg:grid-cols-[1fr_26rem]">
+        <section className="relative">
+          <div className="inline-flex items-center gap-3 rounded-2xl border border-white/80 bg-white/70 px-4 py-3 shadow-[0_18px_40px_rgba(31,41,55,0.10)] backdrop-blur-xl">
+            <img src="/logo.svg" alt="AETHR" className="h-9 w-9" />
+            <span className="text-sm font-bold">AETHR</span>
+          </div>
+          <h1 className="mt-8 max-w-3xl text-5xl font-black leading-none text-slate-950 sm:text-7xl">
+            Study space with a little lift.
           </h1>
-          <p className="mt-8 max-w-xl text-lg leading-8 text-white/52">
-            Aethr organizes your study materials, milestones, and AI guidance into a calm, cinematic workspace built for deep learning.
+          <p className="mt-6 max-w-xl text-base leading-7 text-slate-600">
+            A clean academic workspace for deadlines, PDFs, exams, flashcards, quizzes, and quick sharing.
           </p>
-          <div className="mt-10 grid max-w-xl grid-cols-3 gap-3">
-            {['Vault', 'Roadmap', 'Oracle'].map((item) => (
-              <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-center text-[10px] font-black uppercase tracking-[0.2em] text-white/45 backdrop-blur-xl">
+          <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
+            {['Vault', 'Exam', 'Revision'].map((item) => (
+              <div key={item} className="rounded-2xl border border-white/80 bg-white/60 p-4 text-sm font-semibold text-slate-700 shadow-[0_14px_36px_rgba(31,41,55,0.08)] backdrop-blur-xl">
                 {item}
               </div>
             ))}
           </div>
-        </motion.section>
+        </section>
 
-        <motion.section initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.1 }}>
-          <GlassPanel className="mx-auto max-w-md p-6 md:p-8">
-            <div className="mb-8 text-center">
-              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-accent-indigo">
-                <Sparkles size={24} />
-              </div>
-              <h2 className="text-4xl font-black tracking-[-0.05em]">{isLogin ? 'Resume Aethr' : 'Create Aethr'}</h2>
-              <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.24em] text-white/35">
-                {isLogin ? 'Verify identity' : 'Initialize workspace'}
-              </p>
-            </div>
+        <motion.section
+          initial={{ opacity: 0, y: 18, rotateX: 4 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 0.55 }}
+          className="panel p-5 sm:p-6"
+        >
+          <h2 className="text-2xl font-bold">{isLogin ? 'Welcome back' : 'Create account'}</h2>
+          <p className="mt-1 text-sm text-slate-500">Your focused dashboard is ready.</p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
-                <Field
-                  icon={User}
-                  label="Name"
-                  type="text"
-                  value={formData.name}
-                  placeholder="Your full name"
-                  onChange={(value) => setFormData({ ...formData, name: value })}
-                />
-              )}
-              <Field
-                icon={Mail}
-                label="Email"
-                type="email"
-                value={formData.email}
-                placeholder="email@example.com"
-                onChange={(value) => setFormData({ ...formData, email: value })}
-              />
-              <Field
-                icon={LockKeyhole}
-                label="Password"
-                type="password"
-                value={formData.password}
-                placeholder="••••••••"
-                onChange={(value) => setFormData({ ...formData, password: value })}
-              />
-              <KineticButton type="submit" className="mt-2 w-full">
-                {isLogin ? 'Enter workspace' : 'Create account'}
-              </KineticButton>
-            </form>
-
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="mt-7 w-full text-center text-[10px] font-black uppercase tracking-[0.22em] text-white/35 transition hover:text-white"
-            >
-              {isLogin ? 'No account? Initialize here' : 'Already have access? Sign in'}
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            {!isLogin && (
+              <Field icon={User} label="Name" value={formData.name} onChange={(value) => setFormData({ ...formData, name: value })} />
+            )}
+            <Field icon={Mail} label="Email" type="email" value={formData.email} onChange={(value) => setFormData({ ...formData, email: value })} />
+            <Field icon={LockKeyhole} label="Password" type="password" value={formData.password} onChange={(value) => setFormData({ ...formData, password: value })} />
+            <button className="btn-main flex w-full items-center justify-center gap-2">
+              {isLogin ? 'Enter AETHR' : 'Create Workspace'} <ArrowRight size={16} />
             </button>
-          </GlassPanel>
+          </form>
+
+          <button onClick={() => setIsLogin(!isLogin)} className="mt-5 text-sm font-semibold text-slate-500 hover:text-slate-950">
+            {isLogin ? 'Create a new account' : 'I already have an account'}
+          </button>
         </motion.section>
       </main>
     </div>
   );
 }
 
-function Field({ icon: Icon, label, value, onChange, ...props }) {
+function Field({ icon: Icon, label, value, onChange, type = 'text' }) {
   return (
     <label className="block">
-      <span className="mb-2 ml-1 block text-[10px] font-black uppercase tracking-[0.22em] text-white/35">{label}</span>
-      <span className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 transition focus-within:border-accent-indigo/60 focus-within:bg-white/[0.06]">
-        <Icon size={16} className="text-white/30" />
-        <input
-          required
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/18"
-          {...props}
-        />
+      <span className="mb-2 block text-xs font-semibold text-slate-500">{label}</span>
+      <span className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5 shadow-inner focus-within:border-slate-400">
+        <Icon size={16} className="text-slate-400" />
+        <input required type={type} value={value} onChange={(e) => onChange(e.target.value)} className="w-full bg-transparent text-sm text-slate-950 outline-none" />
       </span>
     </label>
   );

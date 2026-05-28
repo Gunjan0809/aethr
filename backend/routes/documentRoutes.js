@@ -1,6 +1,6 @@
 import express from 'express';
 import { createRequire } from 'module';
-import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import s3 from '../config/s3.js';
 import Document from '../models/Document.js';
@@ -120,6 +120,22 @@ router.get('/:id/url', protect, async (req, res, next) => {
         });
         const url = await getSignedUrl(s3, command, { expiresIn: 900 });
         res.json({ url, title: doc.title, fileType: doc.fileType, fileSize: doc.fileSize, subject: doc.subject, resourceType: doc.resourceType, uploadedAt: doc.createdAt });
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.delete('/:id', protect, async (req, res, next) => {
+    try {
+        const doc = await Document.findOne({ _id: req.params.id, user: req.user._id });
+        if (!doc) return res.status(404).json({ message: 'Document not found' });
+        try {
+            await s3.send(new DeleteObjectCommand({ Bucket: process.env.AWS_BUCKET_NAME, Key: doc.s3Key }));
+        } catch (error) {
+            console.error('S3 delete failed, continuing DB cleanup', error.message);
+        }
+        await doc.deleteOne();
+        res.json({ ok: true });
     } catch (error) {
         next(error);
     }

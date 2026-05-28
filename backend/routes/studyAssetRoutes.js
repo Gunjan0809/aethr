@@ -52,4 +52,14 @@ router.patch('/:id', protect, async (req, res, next) => {
     }
 });
 
+router.delete('/:id', protect, async (req, res, next) => {
+    try {
+        const deleted = await StudyAsset.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+        if (!deleted) return res.status(404).json({ message: 'Asset not found' });
+        res.json({ ok: true });
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default router;

@@ -9,7 +9,12 @@ const userSchema = new mongoose.Schema(
         xp: { type: Number, default: 0 },
         level: { type: Number, default: 1 },
         streak: { type: Number, default: 0 },
-        lastActive: { type: Date, default: Date.now }
+        lastActive: { type: Date, default: Date.now },
+        mobile: { type: String, default: '' },
+        college: { type: String, default: '' },
+        department: { type: String, default: '' },
+        semester: { type: String, default: '' },
+        bio: { type: String, default: '' }
     },
     { timestamps: true }
 );

@@ -36,7 +36,7 @@ connectDB();
 
 // Basic health check route
 app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'ok', message: 'Aether API is active' });
+    res.status(200).json({ status: 'ok', message: 'AETHR API is active' });
 });
 
 
