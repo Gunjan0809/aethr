@@ -1,4 +1,3 @@
-import React from 'react';
 import { LayoutDashboard, BookOpen, Calendar, HelpCircle, Trophy, LogOut } from 'lucide-react';
 
 export default function Sidebar({ currentTab, setCurrentTab }) {

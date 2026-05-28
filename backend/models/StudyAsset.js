@@ -11,8 +11,16 @@ const studyAssetSchema = new mongoose.Schema(
         // - For bookmarks: stores url
         // - For flashcards/quizzes: stores question/answer array structured in JSON
         content: { type: mongoose.Schema.Types.Mixed, required: true },
-
-        tags: [{ type: String }]
+        tags: [{ type: String }],
+        subject: { type: String, default: '' },
+        difficulty: { type: String, enum: ['easy', 'medium', 'hard', 'mixed'], default: 'medium' },
+        favorite: { type: Boolean, default: false },
+        progress: {
+            attempts: { type: Number, default: 0 },
+            correct: { type: Number, default: 0 },
+            lastReviewedAt: { type: Date },
+            nextReviewAt: { type: Date },
+        }
     },
     { timestamps: true }
 );

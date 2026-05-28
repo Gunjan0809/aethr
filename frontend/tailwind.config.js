@@ -7,11 +7,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: {
-          blue: '#006BFF',
-          lightBlue: '#E6F0FF',
-          darkBlue: '#0052C4',
+        dark: {
+          base: '#050505',
+          surface: '#0A0A0A',
+          elevated: '#111111',
+          border: 'rgba(255, 255, 255, 0.08)',
+        },
+        accent: {
+          indigo: '#6366f1',
+          violet: '#a855f7',
+          glow: 'rgba(99, 102, 241, 0.15)',
         }
+      },
+      letterSpacing: {
+        tighter: '-0.02em',
+        tight: '-0.01em',
       }
     },
   },

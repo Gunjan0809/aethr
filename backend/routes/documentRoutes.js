@@ -33,7 +33,7 @@ router.post('/upload-url', protect, async (req, res, next) => {
 // Ensure this path is exactly '/'
 router.post('/', protect, async (req, res, next) => {
     try {
-        const { title, s3Key, fileType, fileSize, tags } = req.body;
+        const { title, s3Key, fileType, fileSize, tags, subject, resourceType } = req.body;
 
         let extractedText = '';
 
@@ -67,6 +67,8 @@ router.post('/', protect, async (req, res, next) => {
             s3Key,
             fileType,
             fileSize,
+            subject,
+            resourceType,
             tags,
             extractedText,
         });
@@ -86,6 +88,8 @@ router.get('/', protect, async (req, res, next) => {
                 const command = new GetObjectCommand({
                     Bucket: process.env.AWS_BUCKET_NAME,
                     Key: doc.s3Key,
+                    ResponseContentType: doc.fileType || 'application/pdf',
+                    ResponseContentDisposition: `inline; filename="${encodeURIComponent(doc.title)}"`,
                 });
                 const viewUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
                 return { ...doc, viewUrl };
@@ -93,6 +97,24 @@ router.get('/', protect, async (req, res, next) => {
         );
 
         res.json(documentsWithUrls);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get('/:id/url', protect, async (req, res, next) => {
+    try {
+        const doc = await Document.findOne({ _id: req.params.id, user: req.user._id });
+        if (!doc) return res.status(404).json({ message: 'PDF missing or access denied' });
+        const disposition = req.query.download === 'true' ? 'attachment' : 'inline';
+        const command = new GetObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: doc.s3Key,
+            ResponseContentType: doc.fileType || 'application/pdf',
+            ResponseContentDisposition: `${disposition}; filename="${encodeURIComponent(doc.title)}"`,
+        });
+        const url = await getSignedUrl(s3, command, { expiresIn: 900 });
+        res.json({ url, title: doc.title, fileType: doc.fileType, fileSize: doc.fileSize, subject: doc.subject, resourceType: doc.resourceType, uploadedAt: doc.createdAt });
     } catch (error) {
         next(error);
     }

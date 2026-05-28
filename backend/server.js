@@ -8,6 +8,9 @@ import documentRoutes from './routes/documentRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import studyAssetRoutes from './routes/studyAssetRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+import deadlineRoutes from './routes/deadlineRoutes.js';
+import examRoutes from './routes/examRoutes.js';
+import shareRoutes from './routes/shareRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -44,6 +47,9 @@ app.use('/api/documents', documentRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/assets', studyAssetRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/deadlines', deadlineRoutes);
+app.use('/api/exams', examRoutes);
+app.use('/api/share', shareRoutes);
 
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {
