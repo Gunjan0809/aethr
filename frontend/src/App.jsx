@@ -1,19 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import LayoutWrapper from './components/LayoutWrapper';
-import Dashboard from './pages/Dashboard';
-import StudyVault from './pages/StudyVault';
-import AIMentor from './pages/AIMentor';
-import Planner from './pages/Planner';
 import Auth from './pages/Auth';
-import { GlassPanel, Reveal, SectionKicker } from './components/Cinematic';
-import Deadlines from './pages/Deadlines';
-import ExamEngine from './pages/ExamEngine';
-import { Flashcards, PracticeQuizzes } from './pages/StudyAssets';
-import QRGenerator from './pages/QRGenerator';
+import Workspace from './pages/Workspace';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [showSplash, setShowSplash] = useState(true);
   const [userStats, setUserStats] = useState({
     name: token ? 'Aether Scholar' : 'Student',
     xp: 0,
@@ -31,9 +25,14 @@ export default function App() {
     });
   };
 
-  const handleStatsUpdate = (updatedStats) => {
-    setUserStats((prev) => ({ ...prev, ...updatedStats }));
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSplash(false), 2100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showSplash) {
+    return <LaunchSplash />;
+  }
 
   if (!token) {
     return <Auth onAuthSuccess={handleAuthSuccess} />;
@@ -43,30 +42,46 @@ export default function App() {
     <Router>
       <LayoutWrapper>
         <Routes>
-          <Route path="/" element={<Dashboard userStats={userStats} />} />
-          <Route path="/vault" element={<StudyVault />} />
-          <Route path="/planner" element={<Planner onStatsUpdate={handleStatsUpdate} />} />
-          <Route path="/deadlines" element={<Deadlines />} />
-          <Route path="/exam-engine" element={<ExamEngine />} />
-          <Route path="/flashcards" element={<Flashcards />} />
-          <Route path="/quizzes" element={<PracticeQuizzes />} />
-          <Route path="/qr" element={<QRGenerator />} />
-          <Route path="/mentor" element={<AIMentor />} />
-          <Route path="/rewards" element={
-            <div className="mx-auto max-w-5xl space-y-8 pt-10 text-center">
-              <Reveal>
-                <SectionKicker>Recognition layer</SectionKicker>
-                <h1 className="mt-6 text-[clamp(3.4rem,8vw,7rem)] font-black leading-[0.86] tracking-[-0.08em]">Rewards are being forged.</h1>
-                <p className="mx-auto mt-6 max-w-xl text-sm leading-7 text-white/45">Milestones, badges, and learning identity will live here as a polished achievement surface.</p>
-              </Reveal>
-              <GlassPanel className="p-10">
-                <p className="text-xs font-black uppercase tracking-[0.24em] text-white/35">Coming soon</p>
-              </GlassPanel>
-            </div>
-          } />
+          <Route path="/" element={<Workspace userStats={userStats} />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </LayoutWrapper>
     </Router>
+  );
+}
+
+function LaunchSplash() {
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-950"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.82, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col items-center"
+        >
+          <div className="rounded-3xl border border-white/20 bg-white/10 p-3 shadow-[0_0_45px_rgba(255,255,255,0.35)] backdrop-blur-sm">
+            <img
+              src="/logo.png"
+              alt="Aethr logo"
+              className="h-24 w-24 rounded-2xl object-contain brightness-150 contrast-125 saturate-150 drop-shadow-[0_0_24px_rgba(255,255,255,0.65)] sm:h-28 sm:w-28"
+            />
+          </div>
+          <motion.p
+            className="mt-5 text-xs font-semibold uppercase tracking-[0.24em] text-white/70"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28, duration: 0.55 }}
+          >
+            Aethr Study Platform
+          </motion.p>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

@@ -51,6 +51,22 @@ router.patch('/:id', protect, async (req, res, next) => {
       { new: true }
     );
     if (!deadline) return res.status(404).json({ message: 'Deadline not found' });
+
+    if (req.body.status === 'completed' && deadline.recurring?.enabled) {
+      const nextDue = new Date(deadline.dueAt);
+      if (deadline.recurring.frequency === 'daily') nextDue.setDate(nextDue.getDate() + 1);
+      else if (deadline.recurring.frequency === 'weekly') nextDue.setDate(nextDue.getDate() + 7);
+      else if (deadline.recurring.frequency === 'monthly') nextDue.setMonth(nextDue.getMonth() + 1);
+
+      await Deadline.create({
+        ...deadline.toObject(),
+        _id: undefined,
+        user: req.user._id,
+        dueAt: nextDue,
+        status: 'pending',
+      });
+    }
+
     res.json(deadline);
   } catch (error) { next(error); }
 });

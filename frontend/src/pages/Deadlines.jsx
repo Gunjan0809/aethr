@@ -67,8 +67,24 @@ export default function Deadlines() {
               </div>
               <Field label="Subject tags"><input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} className={inputClass} placeholder="Physics, PYQ" /></Field>
               <div className="grid grid-cols-2 gap-3 text-xs text-white/45">
-                <label><input type="checkbox" checked={form.alerts.browser} onChange={(e) => setForm({ ...form, alerts: { ...form.alerts, browser: e.target.checked } })} /> Browser</label>
-                <label><input type="checkbox" checked={form.alerts.sound} onChange={(e) => setForm({ ...form, alerts: { ...form.alerts, sound: e.target.checked } })} /> Sound</label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={form.recurring.enabled} onChange={(e) => setForm({ ...form, recurring: { ...form.recurring, enabled: e.target.checked } })} /> Recurring reminder
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={form.alerts.browser} onChange={(e) => setForm({ ...form, alerts: { ...form.alerts, browser: e.target.checked } })} /> Browser
+                </label>
+              </div>
+              {form.recurring.enabled && (
+                <Field label="Recurrence frequency">
+                  <select value={form.recurring.frequency} onChange={(e) => setForm({ ...form, recurring: { ...form.recurring, frequency: e.target.value } })} className={inputClass}>
+                    {['daily', 'weekly', 'monthly'].map((x) => <option className="bg-[#111116]" key={x}>{x}</option>)}
+                  </select>
+                </Field>
+              )}
+              <div className="grid grid-cols-1 gap-3 text-xs text-white/45">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={form.alerts.sound} onChange={(e) => setForm({ ...form, alerts: { ...form.alerts, sound: e.target.checked } })} /> Sound alert
+                </label>
               </div>
               <KineticButton type="submit" className="w-full"><Plus size={15} /> Add reminder</KineticButton>
             </form>

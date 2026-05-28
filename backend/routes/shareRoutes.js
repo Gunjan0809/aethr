@@ -23,6 +23,7 @@ router.get('/public/:token', async (req, res, next) => {
   try {
     const share = await ShareLink.findOne({ token: req.params.token });
     if (!share || (share.expiresAt && share.expiresAt < new Date())) return res.status(404).json({ message: 'Share link expired or missing' });
+    if (share.visibility === 'private') return res.status(403).json({ message: 'This share link is private' });
     res.json({ kind: share.kind, title: share.title, payload: share.payload, permissions: share.permissions });
   } catch (error) { next(error); }
 });

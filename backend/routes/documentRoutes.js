@@ -9,6 +9,11 @@ import { protect } from '../middleware/authMiddleware.js';
 const router = express.Router();
 const require = createRequire(import.meta.url);
 const pdf = require('pdf-parse');
+const buildDisposition = (title = 'document.pdf', mode = 'inline') => {
+    const sanitized = String(title).replace(/["\\]/g, '');
+    const encoded = encodeURIComponent(sanitized);
+    return `${mode}; filename="${sanitized}"; filename*=UTF-8''${encoded}`;
+};
 
 // Ensure this path is exactly '/upload-url'
 router.post('/upload-url', protect, async (req, res, next) => {
@@ -89,7 +94,7 @@ router.get('/', protect, async (req, res, next) => {
                     Bucket: process.env.AWS_BUCKET_NAME,
                     Key: doc.s3Key,
                     ResponseContentType: doc.fileType || 'application/pdf',
-                    ResponseContentDisposition: `inline; filename="${encodeURIComponent(doc.title)}"`,
+                    ResponseContentDisposition: buildDisposition(doc.title, 'inline'),
                 });
                 const viewUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
                 return { ...doc, viewUrl };
@@ -111,7 +116,7 @@ router.get('/:id/url', protect, async (req, res, next) => {
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: doc.s3Key,
             ResponseContentType: doc.fileType || 'application/pdf',
-            ResponseContentDisposition: `${disposition}; filename="${encodeURIComponent(doc.title)}"`,
+            ResponseContentDisposition: buildDisposition(doc.title, disposition),
         });
         const url = await getSignedUrl(s3, command, { expiresIn: 900 });
         res.json({ url, title: doc.title, fileType: doc.fileType, fileSize: doc.fileSize, subject: doc.subject, resourceType: doc.resourceType, uploadedAt: doc.createdAt });

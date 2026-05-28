@@ -7,6 +7,7 @@ const shareLinkSchema = new mongoose.Schema(
     title: { type: String, default: 'Shared resource' },
     payload: { type: mongoose.Schema.Types.Mixed, required: true },
     permissions: { type: String, enum: ['view', 'download'], default: 'view' },
+    visibility: { type: String, enum: ['public', 'private'], default: 'public' },
     expiresAt: { type: Date },
     token: { type: String, required: true, unique: true, index: true },
   },
