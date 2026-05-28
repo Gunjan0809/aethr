@@ -11,4 +11,13 @@ export default defineConfig({
       plugins: [tailwindcss(), autoprefixer()],
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://aethr.onrender.com',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
 })

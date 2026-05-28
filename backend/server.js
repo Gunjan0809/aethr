@@ -21,9 +21,23 @@ const app = express();
 // Secure app by setting various HTTP headers
 app.use(helmet());
 
-// Enable CORS
+// Enable CORS — allow all trusted origins
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://aethr-indol.vercel.app',
+    process.env.CLIENT_URL,
+].filter(Boolean);
+
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+        // Allow requests with no origin (e.g. mobile apps, curl, Postman)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error(`CORS: Origin ${origin} not allowed`));
+    },
     credentials: true
 }));
 
@@ -38,9 +52,6 @@ connectDB();
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok', message: 'AETHR API is active' });
 });
-
-
-
 
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
@@ -63,8 +74,6 @@ app.use((err, req, res, next) => {
         stack: process.env.NODE_ENV === 'production' ? null : err.stack,
     });
 });
-
-
 
 const PORT = process.env.PORT || 5000;
 
